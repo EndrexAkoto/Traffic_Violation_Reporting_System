@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'report_violation_screen.dart'; // Ensure this exists in 'lib/'
-import 'pages/landing_page.dart'; // Ensure this exists in 'lib/pages'
-import 'widgets/dashboard_summary.dart'; // Ensure this exists in 'lib/widgets'
-import 'widgets/sidebar.dart'; // Ensure this exists in 'lib/widgets'
-import 'services/api_service.dart'; // Ensure this exists in 'lib/services'
+import 'pages/landing_page.dart';
+import 'pages/login_screen.dart';
+import 'pages/signup_screen.dart';
+import 'pages/privacy_policy_page.dart';
+import 'pages/terms_of_service_page.dart';
+import 'pages/about_page.dart';
+import 'pages/contacts_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,12 +17,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Traffic Violation Reporting',
+      title: 'Traffic Violation Reporting System',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LandingPage(), // Change this to LandingPage
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LandingPage(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignUpScreen(),
+        '/privacy-policy': (context) => const PrivacyPolicyPage(),
+        '/terms-of-service': (context) => const TermsOfServicePage(),
+        '/about': (context) => const AboutPage(),
+        '/contacts': (context) => const ContactsPage(),
+      },
     );
   }
 }
