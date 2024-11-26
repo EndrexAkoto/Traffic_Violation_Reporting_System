@@ -33,20 +33,29 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple, // Matching theme color
+        title: const Text('Login'),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+        padding: const EdgeInsets.all(24.0), // Increased padding for better spacing
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Email field
+              const SizedBox(height: 20),
+
+              // Email field with enhanced decoration
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
+                  labelStyle: TextStyle(color: Colors.deepPurple), // Text style for the label
+                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple), // Icon color matches theme
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepPurple), // Focused border color
+                  ),
+                  border: UnderlineInputBorder(),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
@@ -56,14 +65,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24), // Increased space between fields
 
-              // Password field
+              // Password field with enhanced decoration
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
+                  labelStyle: TextStyle(color: Colors.deepPurple),
+                  prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepPurple),
+                  ),
+                  border: UnderlineInputBorder(),
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -73,20 +87,53 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24), // Increased space between fields
 
-              // Login button
+              // Login button with Tailwind-like styling
               ElevatedButton(
                 onPressed: _login,
-                child: const Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple, // Button color matches theme
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  'Login',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Text color for the button
+                  ),
+                ),
               ),
+              const SizedBox(height: 16),
 
-              // Sign up link
+              // Sign up link with some styling
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/signup');
                 },
-                child: const Text('Don\'t have an account? Sign up'),
+                child: const Text(
+                  'Don\'t have an account? Sign up',
+                  style: TextStyle(
+                    color: Colors.deepPurple, // Link color matches theme
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Copyright Footer
+              const Center(
+                child: Text(
+                  '© 2024 Traffic Violation Reporting System. All rights reserved.',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ],
           ),
