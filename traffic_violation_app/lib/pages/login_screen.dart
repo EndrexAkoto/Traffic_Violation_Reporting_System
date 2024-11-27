@@ -27,6 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
       // Replace with API call and authentication logic
       // Example:
       // ApiService.login(email, password);
+
+      // After successful login, navigate to UserProfilePage
+      Navigator.pushReplacementNamed(context, '/profile'); // Replaces the current screen with the profile page
     }
   }
 
