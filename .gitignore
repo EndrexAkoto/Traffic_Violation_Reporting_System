@@ -1,0 +1,21 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore environment variables
+.env
+
+# Ignore Python virtual environment
+venv/
+
+# Ignore log files
+*.log
+
+# Ignore OS-specific files (macOS, Windows, etc.)
+.DS_Store
+Thumbs.db
+
+# Ignore build output (for Flutter)
+build/
+
+# Password
+config/db.js

@@ -1,0 +1,15 @@
+{
+    "cmake.sourceDirectory": "/home/akoto/Documents/Traffic_Violation_Reporting_System/traffic_violation_app/linux",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "akoto",
+            "database": "traffic_violations",
+            "username": "postgres"
+        }
+    ]
+}

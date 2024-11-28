@@ -112,7 +112,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ElevatedButton(
               onPressed: _editProfile,
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
+                backgroundColor: Colors.deepPurple,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -132,7 +132,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ElevatedButton(
               onPressed: _logout,
               style: ElevatedButton.styleFrom(
-                primary: Colors.redAccent, // Different color for logout
+                backgroundColor: Colors.redAccent, // Different color for logout
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
