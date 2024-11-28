@@ -19,3 +19,4 @@ build/
 
 # Password
 config/db.js
+**/db.js

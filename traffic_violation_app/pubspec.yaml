@@ -33,3 +33,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/dp.jpg
+    - assets/dp.jpg
+    - assets/images/logo.png
