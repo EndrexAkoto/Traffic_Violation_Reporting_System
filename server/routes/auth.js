@@ -1,23 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { Client } = require('pg');
-require('dotenv').config();
+// Import PostgreSQL client from db.js
+const client = require('./db');  // Assuming db.js is in the same directory
 
 const router = express.Router();
-
-// PostgreSQL client setup
-const client = new Client({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-
-client.connect()  // Connect to the database
-  .then(() => console.log('Connected to PostgreSQL'))
-  .catch((err) => console.error('Database connection error', err));
 
 // Middleware to verify JWT
 const verifyToken = (req, res, next) => {
@@ -25,7 +12,7 @@ const verifyToken = (req, res, next) => {
   if (!token) return res.status(401).send('Access Denied');
   
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const verified = jwt.verify(token, 'your_jwt_secret'); // Use your JWT secret here
     req.user = verified;  // Attach user to the request
     next();
   } catch (err) {
@@ -76,7 +63,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Create and assign a token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
 
     res.json({
       message: 'Logged in successfully!',

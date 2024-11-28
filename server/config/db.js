@@ -1,24 +1,20 @@
-const { Client } = require('pg')
-require('dotenv').config()
+const { Client } = require('pg')  // Import Client from 'pg'
 
-// Set up the PostgreSQL client
+// Directly define your credentials here
 const client = new Client({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  user: 'postgres',  // Your DB username
+  host: 'localhost',  // Your DB host (e.g., 'localhost')
+  database: 'traffic_violations',  // Your DB name
+  password: 'Akoto@2015',  // Your DB password
+  port: 5432,  // Your DB port (usually 5432 for PostgreSQL)
 })
 
-// Connect to the database
 client.connect()
   .then(() => {
     console.log('Database connected successfully!')
-    client.end() // Close the connection
   })
-  .catch(err => {
-    console.error('Database connection error:', err.stack)
-    client.end() // Ensure to close connection on error
+  .catch((err) => {
+    console.error('Database connection error', err.stack)
   })
 
-module.exports = client
+module.exports = client  // Export the client instance for use in other files

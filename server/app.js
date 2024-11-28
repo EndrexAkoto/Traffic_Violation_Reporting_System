@@ -1,32 +1,48 @@
+// app.js
 const express = require('express')
-const { Client } = require('pg')
+const pool = require('./config/db')  // Import the pool from db.js
 const app = express()
+const port = 3000
 
-// PostgreSQL client setup
-const client = new Client({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+// Middleware to handle JSON requests
+app.use(express.json())
+
+// Example route to fetch data from the database
+app.get('/api/data', (req, res) => {
+  pool.query('SELECT * FROM your_table_name', (err, result) => {
+    if (err) {
+      console.error('Error executing query', err.stack)
+      res.status(500).json({ error: 'Database query failed' })
+    } else {
+      res.status(200).json(result.rows) // Send the result from the query
+    }
+  })
 })
 
-client.connect()
-  .then(() => {
-    console.log('Database connected successfully!')
-  })
-  .catch((err) => {
-    console.error('Database connection error', err.stack)
-  })
+// Example route to post data to the database
+app.post('/api/data', (req, res) => {
+  const { data } = req.body
 
-// Your routes and middleware
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+  // Insert data into the database
+  pool.query('INSERT INTO your_table_name (data_column) VALUES ($1)', [data], (err, result) => {
+    if (err) {
+      console.error('Error executing insert', err.stack)
+      res.status(500).json({ error: 'Failed to insert data' })
+    } else {
+      res.status(201).json({ message: 'Data inserted successfully' })
+    }
+  })
 })
 
-// Add your other routes or logic here
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+})
 
-const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+// Gracefully handle server shutdown
+process.on('SIGINT', () => {
+  pool.end(() => {
+    console.log('Database connection pool has ended')
+    process.exit(0)
+  })
 })
