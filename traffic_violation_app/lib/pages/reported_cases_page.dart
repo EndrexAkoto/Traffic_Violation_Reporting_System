@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ReportedCasesPage extends StatelessWidget {
-  const ReportedCasesPage({Key? key}) : super(key: key);
+  const ReportedCasesPage({super.key});
 
   @override
   Widget build(BuildContext context) {

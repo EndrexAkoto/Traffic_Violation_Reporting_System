@@ -16,13 +16,8 @@ import 'pages/case_details_page.dart'; // Import the CaseDetailsPage
 import 'pages/admin/landing_page.dart';
 import 'pages/admin/login_screen.dart';
 import 'pages/admin/signup_screen.dart';
-import 'pages/admin/admin_dashboard.dart';
-import 'pages/admin/admin_settings_page.dart';
-import 'pages/admin/edit_user_page.dart';
-import 'pages/admin/login_screen.dart';
-import 'pages/admin/signup_screen.dart';
 
-import 'dart:async'; // For the delay
+// For the delay
 
 void main() {
   runApp(const MyApp());
