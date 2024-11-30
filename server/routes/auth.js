@@ -1,9 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// Import PostgreSQL client from db.js
-const client = require('./db');  // Assuming db.js is in the same directory
-
+const pool = require('../config/db');  // Assuming db.js is in the same directory
 const router = express.Router();
 
 // Middleware to verify JWT
@@ -29,7 +27,7 @@ router.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   try {
-    const result = await client.query(
+    const result = await pool.query(
       'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
       [username, email, hashedPassword]
     );
@@ -49,7 +47,7 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     const user = result.rows[0];
 
     if (!user) {
@@ -78,7 +76,7 @@ router.post('/login', async (req, res) => {
 // 3. Protected Route Example (using JWT middleware)
 router.get('/dashboard', verifyToken, async (req, res) => {
   try {
-    const result = await client.query('SELECT * FROM violations WHERE user_id = $1', [req.user.id]);
+    const result = await pool.query('SELECT * FROM violations WHERE user_id = $1', [req.user.id]);
     res.json({
       message: 'Welcome to your dashboard!',
       violations: result.rows
@@ -91,7 +89,7 @@ router.get('/dashboard', verifyToken, async (req, res) => {
 
 // Close the database connection when the server is shut down
 process.on('exit', () => {
-  client.end();
+  pool.end();
 });
 
 module.exports = router;

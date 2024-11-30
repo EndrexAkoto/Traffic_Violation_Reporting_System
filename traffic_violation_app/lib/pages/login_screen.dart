@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert'; // Ensure this is imported for JSON decoding
+import 'package:http/http.dart' as http; // Import the HTTP package
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,24 +14,36 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Function to handle login action
-  void _login() {
+  // Function to handle login
+  void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Proceed with the login process (e.g., API call)
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      // For now, just show a message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logging in...')),
+      print('Attempting login with email: $email'); // Debugging line
+
+      final response = await http.post(
+        Uri.parse(
+            'http://your_backend_url/api/login'), // Replace with your actual backend URL
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
-      // Replace with API call and authentication logic
-      // Example:
-      // ApiService.login(email, password);
+      print('Response status: ${response.statusCode}'); // Debugging line
 
-      // After successful login, navigate to UserProfilePage
-      Navigator.pushReplacementNamed(context, '/profile'); // Replaces the current screen with the profile page
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        print('Token received: $token'); // Debugging line
+
+        // You can store the token and navigate as needed, for example:
+        // Navigator.pushReplacementNamed(context, '/dashboard');
+      } else {
+        print('Login failed with response: ${response.body}'); // Debugging line
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login failed. Check credentials')),
+        );
+      }
     }
   }
 
@@ -37,106 +51,27 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple, // Matching theme color
         title: const Text('Login'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0), // Increased padding for better spacing
+        padding: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
-
-              // Email field with enhanced decoration
+              // Email and password form fields
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.deepPurple), // Text style for the label
-                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple), // Icon color matches theme
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple), // Focused border color
-                  ),
-                  border: UnderlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email';
-                  }
-                  return null;
-                },
+                decoration: const InputDecoration(labelText: 'Email'),
               ),
-              const SizedBox(height: 24), // Increased space between fields
-
-              // Password field with enhanced decoration
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: TextStyle(color: Colors.deepPurple),
-                  prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple),
-                  ),
-                  border: UnderlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 24), // Increased space between fields
-
-              // Login button with Tailwind-like styling
+              SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple, // Button color matches theme
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, // Text color for the button
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Sign up link with some styling
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
-                },
-                child: const Text(
-                  'Don\'t have an account? Sign up',
-                  style: TextStyle(
-                    color: Colors.deepPurple, // Link color matches theme
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Copyright Footer
-              const Center(
-                child: Text(
-                  '© 2024 Traffic Violation Reporting System. All rights reserved.',
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 14,
-                  ),
-                ),
+                onPressed: _login, // Calling _login on button press
+                child: const Text('Login'),
               ),
             ],
           ),

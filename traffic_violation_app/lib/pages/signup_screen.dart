@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,23 +13,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   // Function to handle sign up action
-  void _signUp() {
+  void _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Proceed with the sign-up process (e.g., API call)
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      // For now, just show a message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signing up...')),
+      final response = await http.post(
+        Uri.parse(
+            'http://your_backend_url/api/register'), // Update this URL to your backend
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
-      // Replace with API call and user registration logic
-      // Example:
-      // ApiService.signup(email, password);
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign up successful!')),
+        );
+
+        Navigator.pushReplacementNamed(
+            context, '/login'); // Redirect to login page after signup
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign up failed')),
+        );
+      }
     }
   }
 
@@ -39,7 +54,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         title: const Text('Sign Up'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0), // Increased padding for better spacing
+        padding:
+            const EdgeInsets.all(24.0), // Increased padding for better spacing
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -51,10 +67,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.deepPurple), // Text style for the label
-                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple), // Icon color matches theme
+                  labelStyle: TextStyle(
+                      color: Colors.deepPurple), // Text style for the label
+                  prefixIcon: Icon(Icons.email,
+                      color: Colors.deepPurple), // Icon color matches theme
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple), // Focused border color
+                    borderSide: BorderSide(
+                        color: Colors.deepPurple), // Focused border color
                   ),
                   border: UnderlineInputBorder(),
                 ),
@@ -119,7 +138,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple, // Button color matches theme
+                  backgroundColor:
+                      Colors.deepPurple, // Button color matches theme
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8), // Rounded corners
                   ),

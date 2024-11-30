@@ -6,6 +6,22 @@ import 'pages/privacy_policy_page.dart';
 import 'pages/terms_of_service_page.dart';
 import 'pages/about_page.dart';
 import 'pages/contacts_page.dart';
+import 'pages/splash_screen.dart'; // Import the SplashScreen
+import 'pages/profile_screen.dart'; // Import the ProfileScreen
+import 'pages/edit_profile_screen.dart'; // Import the EditProfileScreen
+import 'pages/reported_cases_page.dart'; // Import the ReportedCasesPage
+import 'pages/unsolved_cases_page.dart'; // Import the UnsolvedCasesPage
+import 'pages/solved_cases_page.dart'; // Import the SolvedCasesPage
+import 'pages/case_details_page.dart'; // Import the CaseDetailsPage
+import 'pages/admin/landing_page.dart';
+import 'pages/admin/login_screen.dart';
+import 'pages/admin/signup_screen.dart';
+import 'pages/admin/admin_dashboard.dart';
+import 'pages/admin/admin_settings_page.dart';
+import 'pages/admin/edit_user_page.dart';
+import 'pages/admin/login_screen.dart';
+import 'pages/admin/signup_screen.dart';
+
 import 'dart:async'; // For the delay
 
 void main() {
@@ -26,7 +42,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/', // This will first show the SplashScreen
       routes: {
-        '/': (context) => const SplashScreen(),
+        '/': (context) => const SplashScreen(), // SplashScreen route
         '/landing': (context) => const LandingPage(),
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
@@ -34,43 +50,19 @@ class MyApp extends StatelessWidget {
         '/terms-of-service': (context) => const TermsOfServicePage(),
         '/about': (context) => const AboutPage(),
         '/contacts': (context) => const ContactsPage(),
+        '/profile': (context) => const ProfileScreen(),
+        '/edit-profile': (context) => const EditProfileScreen(),
+        '/reported-cases': (context) =>
+            const ReportedCasesPage(), // Reported Cases
+        '/unsolved-cases': (context) =>
+            const UnsolvedCasesPage(), // Unsolved Cases
+        '/solved-cases': (context) => const SolvedCasesPage(), // Solved Cases
+        '/case-details': (context) => const CaseDetailsPage(), // Case Details
+        '/admin-landing': (context) => const AdminLandingPage(),
+        '/admin-login': (context) => const AdminLoginScreen(),
+        '/admin-signup': (context) => const AdminSignUpScreen(),
+
       },
-    );
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Automatically navigate to the LandingPage after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/landing');
-    });
-
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Display the logo image
-            Image.asset(
-              'assets/images/logo.png', // Path to your image
-              width: 150,
-              height: 150,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Traffic Violation Reporting System',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
