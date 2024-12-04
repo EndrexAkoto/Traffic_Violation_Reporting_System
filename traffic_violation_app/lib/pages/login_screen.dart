@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final response = await http.post(
         Uri.parse(
-            'http://your_backend_url/api/login'), // Replace with your actual backend URL
+            'http://localhost:3000/api/register'), // Replace with your actual backend URL
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );

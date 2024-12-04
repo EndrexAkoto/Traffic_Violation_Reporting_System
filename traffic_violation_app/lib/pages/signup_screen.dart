@@ -16,31 +16,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  // Function to handle sign up action
+  // Function to handle sign-up action
   void _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      final response = await http.post(
-        Uri.parse(
-            'http://your_backend_url/api/register'), // Update this URL to your backend
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-
-      if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign up successful!')),
+      try {
+        final response = await http.post(
+          Uri.parse('http://127.0.0.1:5000/register'), // Update URL if needed
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'email': email, 'password': password}),
         );
 
-        Navigator.pushReplacementNamed(
-            context, '/login'); // Redirect to login page after signup
-      } else {
+        print('Response Status: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+
+        if (response.statusCode == 201) {
+          // Success
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Sign up successful!')),
+          );
+
+          // Navigate to login screen after successful sign-up
+          Navigator.pushReplacementNamed(context, '/login');
+        } else {
+          // Failure
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Sign up failed')),
+          );
+        }
+      } catch (e) {
+        // Handle network errors or unexpected issues
+        print('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign up failed')),
+          const SnackBar(content: Text('An error occurred')),
         );
       }
     }
@@ -67,13 +77,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  labelStyle: TextStyle(
-                      color: Colors.deepPurple), // Text style for the label
-                  prefixIcon: Icon(Icons.email,
-                      color: Colors.deepPurple), // Icon color matches theme
+                  labelStyle: TextStyle(color: Colors.deepPurple),
+                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.deepPurple), // Focused border color
+                    borderSide: BorderSide(color: Colors.deepPurple),
                   ),
                   border: UnderlineInputBorder(),
                 ),
@@ -85,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 24), // Increased space between fields
+              const SizedBox(height: 24),
 
               // Password field with enhanced decoration
               TextFormField(
@@ -132,16 +139,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 24), // Increased space between fields
+              const SizedBox(height: 24),
 
               // Sign Up button with Tailwind-like styling
               ElevatedButton(
                 onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.deepPurple, // Button color matches theme
+                  backgroundColor: Colors.deepPurple,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -150,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Text color for the button
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -164,7 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: const Text(
                   'Already have an account? Login',
                   style: TextStyle(
-                    color: Colors.deepPurple, // Link color matches theme
+                    color: Colors.deepPurple,
                     fontSize: 16,
                   ),
                 ),
