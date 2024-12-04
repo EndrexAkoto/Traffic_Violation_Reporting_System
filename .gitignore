@@ -1,22 +1,24 @@
-# Ignore node_modules
-node_modules/
-
-# Ignore environment variables
-.env
-
 # Ignore Python virtual environment
 venv/
 
 # Ignore log files
 *.log
 
-# Ignore OS-specific files (macOS, Windows, etc.)
+# Ignore OS-specific files
 .DS_Store
 Thumbs.db
 
-# Ignore build output (for Flutter)
+# Ignore Python bytecode
+*.pyc
+__pycache__/
+
+# Ignore sensitive configuration files
+config/db.py
+**/db.py
+
+# Ignore Flutter build output
 build/
 
-# Password
-config/db.js
-**/db.js
+# IDE-specific files
+.idea/
+.vscode/
