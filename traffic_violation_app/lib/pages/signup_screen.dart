@@ -1,3 +1,4 @@
+// Signup File
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -24,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://127.0.0.1:5000/register'), // Update URL if needed
+          Uri.parse('http://192.168.137.149:3000/api/register'), // Updated URL
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'email': email, 'password': password}),
         );

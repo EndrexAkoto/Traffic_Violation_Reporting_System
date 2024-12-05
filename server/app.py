@@ -2,11 +2,11 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import pool
-from config.db import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, db_connection
+from config.db import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT  # Remove unnecessary db_connection import
 from routes.auth import auth_bp  # Import the authentication routes
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all domains
+CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all origins; adjust if needed
 
 # Set up the PostgreSQL connection pool using credentials from db.py
 DB_POOL = psycopg2.pool.SimpleConnectionPool(
@@ -19,22 +19,22 @@ def get_db_connection():
         return DB_POOL.getconn()
     return None
 
-# Attempt to connect to the database and print success message
-conn = db_connection()
-if conn:
-    print("Successfully connected to the database from app.py!")
-    conn.close()  # Don't forget to close the connection after checking
-
 # Example route to fetch data from the database
 @app.route('/api/data', methods=['GET'])
 def get_data():
     conn = get_db_connection()
     if conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM your_table_name')  # Replace with actual table name
-        result = cursor.fetchall()
-        cursor.close()
-        return jsonify(result), 200
+        try:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM traffic_violations')  # Replace with actual table name
+            result = cursor.fetchall()
+            cursor.close()
+            return jsonify(result), 200
+        except Exception as e:
+            print(f"Error fetching data: {e}")
+            return jsonify({"error": "Error fetching data from the database"}), 500
+        finally:
+            conn.close()  # Return the connection to the pool
     return jsonify({"error": "Database connection failed"}), 500
 
 # Add a route for the homepage to avoid 404 errors
@@ -46,4 +46,5 @@ def home():
 app.register_blueprint(auth_bp, url_prefix='/api')
 
 if __name__ == '__main__':
-    app.run(port=3000)
+    # Bind to all interfaces and run on port 3000
+    app.run(host='0.0.0.0', port=3000)

@@ -5,12 +5,12 @@ import datetime
 from functools import wraps
 from config.db import db_connection
 
-auth_bp = Blueprint('auth', __name__)  # Define the Blueprint as auth_bp
+# Define the Blueprint for authentication
+auth_bp = Blueprint('auth', __name__)
 
 JWT_SECRET = 'your_jwt_secret'  # Replace with your JWT secret key
 
-
-# Middleware to verify JWT
+# Middleware to verify JWT token
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -20,25 +20,37 @@ def token_required(f):
         try:
             data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             request.user_id = data['id']  # Attach user ID to the request
-        except Exception as e:
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
             return jsonify({'message': 'Invalid Token'}), 400
         return f(*args, **kwargs)
     return decorated
 
-
-# 1. User Registration Route
-@auth_bp.route('/register', methods=['POST'])  # Use auth_bp here
+# User Registration Route
+@auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.json
-    username = data['username']
-    email = data['email']
-    password = data['password']
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
 
-    hashed_password = generate_password_hash(password, method='sha256')
+    if not username or not email or not password:
+        return jsonify({'message': 'Missing data'}), 400
 
     try:
         conn = db_connection()
         cur = conn.cursor()
+
+        # Check if username or email already exists
+        cur.execute('SELECT id FROM users WHERE username = %s OR email = %s', (username, email))
+        existing_user = cur.fetchone()
+        if existing_user:
+            return jsonify({'message': 'Username or email already exists'}), 400
+
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+        # Insert the new user
         cur.execute(
             'INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id, username, email',
             (username, email, hashed_password)
@@ -50,21 +62,23 @@ def register():
 
         return jsonify({'message': 'User registered successfully!', 'user': user}), 201
     except Exception as e:
-        print(e)
+        print(f"Error during registration: {e}")
         return jsonify({'message': 'Server error'}), 500
 
-
-# 2. User Login Route
-@auth_bp.route('/login', methods=['POST'])  # Use auth_bp here
+# User Login Route
+@auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.json
-    email = data['email']
-    password = data['password']
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'message': 'Missing data'}), 400
 
     try:
         conn = db_connection()
         cur = conn.cursor()
-        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        cur.execute('SELECT id, username, email, password_hash FROM users WHERE email = %s', (email,))
         user = cur.fetchone()
         cur.close()
         conn.close()
@@ -85,12 +99,11 @@ def login():
 
         return jsonify({'message': 'Logged in successfully!', 'token': token})
     except Exception as e:
-        print(e)
+        print(f"Error during login: {e}")
         return jsonify({'message': 'Server error'}), 500
 
-
-# 3. Protected Route Example
-@auth_bp.route('/dashboard', methods=['GET'])  # Use auth_bp here
+# Protected Route Example (Dashboard)
+@auth_bp.route('/dashboard', methods=['GET'])
 @token_required
 def dashboard():
     try:
@@ -103,5 +116,5 @@ def dashboard():
 
         return jsonify({'message': 'Welcome to your dashboard!', 'violations': violations})
     except Exception as e:
-        print(e)
+        print(f"Error fetching dashboard data: {e}")
         return jsonify({'message': 'Server error'}), 500

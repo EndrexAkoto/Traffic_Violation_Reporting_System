@@ -22,3 +22,7 @@ build/
 # IDE-specific files
 .idea/
 .vscode/
+
+# Ignore Node.js dependencies
+node_modules/
+```

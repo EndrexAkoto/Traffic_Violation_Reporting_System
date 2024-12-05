@@ -1,6 +1,7 @@
+// Login File
 import 'package:flutter/material.dart';
-import 'dart:convert'; // Ensure this is imported for JSON decoding
-import 'package:http/http.dart' as http; // Import the HTTP package
+import 'dart:convert'; // For JSON decoding
+import 'package:http/http.dart' as http; // For HTTP requests
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,26 +23,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
       print('Attempting login with email: $email'); // Debugging line
 
-      final response = await http.post(
-        Uri.parse(
-            'http://localhost:3000/api/register'), // Replace with your actual backend URL
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
+      try {
+        final response = await http.post(
+          Uri.parse('http://192.168.137.149:3000/api/login'), // Updated URL
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'email': email, 'password': password}),
+        );
 
-      print('Response status: ${response.statusCode}'); // Debugging line
+        print('Response status: ${response.statusCode}'); // Debugging line
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final token = data['token'];
-        print('Token received: $token'); // Debugging line
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final token = data['token'];
+          print('Token received: $token'); // Debugging line
 
-        // You can store the token and navigate as needed, for example:
-        // Navigator.pushReplacementNamed(context, '/dashboard');
-      } else {
-        print('Login failed with response: ${response.body}'); // Debugging line
+          // Store the token and navigate as needed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login successful')),
+          );
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        } else {
+          print(
+              'Login failed with response: ${response.body}'); // Debugging line
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login failed. Check credentials')),
+          );
+        }
+      } catch (e) {
+        print('An error occurred: $e'); // Debugging line
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login failed. Check credentials')),
+          const SnackBar(content: Text('An error occurred')),
         );
       }
     }
@@ -62,13 +73,25 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an email';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  return null;
+                },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login, // Calling _login on button press
                 child: const Text('Login'),
