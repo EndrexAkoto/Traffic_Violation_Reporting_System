@@ -1,4 +1,3 @@
-// Login File
 import 'package:flutter/material.dart';
 import 'dart:convert'; // For JSON decoding
 import 'package:http/http.dart' as http; // For HTTP requests
@@ -63,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        backgroundColor: const Color(0xFF6200EA), // Deep purple color
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -95,6 +95,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _login, // Calling _login on button press
                 child: const Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      const Color(0xFF6200EA), // Deep purple button
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Footer with copyright and theme color
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  '© 2024 Traffic Violation Reporting System',
+                  style: TextStyle(
+                    color: const Color(0xFF6200EA), // Deep purple footer text
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ],
           ),

@@ -9,7 +9,8 @@ class LandingPage extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            const Icon(Icons.traffic, color: Color.fromARGB(255, 82, 209, 9)), // Logo placeholder
+            const Icon(Icons.traffic,
+                color: Color.fromARGB(255, 82, 209, 9)), // Logo placeholder
             const SizedBox(width: 50),
             const Text('Traffic Violation Reporting System'),
           ],
@@ -19,56 +20,46 @@ class LandingPage extends StatelessWidget {
             message: 'Home',
             child: TextButton(
               onPressed: () => Navigator.pushNamed(context, '/'),
-              child: const Text('Home', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text('Home',
+                  style: TextStyle(color: Colors.deepPurple)),
             ),
           ),
           Tooltip(
             message: 'About Us',
             child: TextButton(
               onPressed: () => Navigator.pushNamed(context, '/about'),
-              child: const Text('About Us', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text('About Us',
+                  style: TextStyle(color: Colors.deepPurple)),
             ),
           ),
           Tooltip(
             message: 'Contact Us',
             child: TextButton(
               onPressed: () => Navigator.pushNamed(context, '/contacts'),
-              child: const Text('Contact', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text('Contact',
+                  style: TextStyle(color: Colors.deepPurple)),
             ),
           ),
           Tooltip(
             message: 'Login',
             child: TextButton(
               onPressed: () => Navigator.pushNamed(context, '/login'),
-              child: const Text('Login', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text('Login',
+                  style: TextStyle(color: Colors.deepPurple)),
             ),
           ),
           Tooltip(
             message: 'Sign Up',
             child: TextButton(
               onPressed: () => Navigator.pushNamed(context, '/signup'),
-              child: const Text('Sign Up', style: TextStyle(color: Colors.deepPurple)),
-            ),
-          ),
-          // Add Profile Picture Here
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () {
-                // Handle profile tap, e.g., navigate to Profile Screen
-                Navigator.pushNamed(context, '/profile');
-              },
-              child: const CircleAvatar(
-                radius: 18,
-                backgroundImage: AssetImage('assets/dp.jpg'), // Path to the image
-              ),
+              child: const Text('Sign Up',
+                  style: TextStyle(color: Colors.deepPurple)),
             ),
           ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Hero Section
             Container(
@@ -97,6 +88,22 @@ class LandingPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+            // Search Bar Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Search Traffic Violations',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.deepPurple),
+                  ),
+                  prefixIcon:
+                      const Icon(Icons.search, color: Colors.deepPurple),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             // Key Features Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -120,6 +127,73 @@ class LandingPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+            // Quick Action Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildActionItem(Icons.report_problem, 'Report a Violation'),
+                  _buildActionItem(Icons.visibility, 'View Active Cases'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Carousel Section (Featured Reports or News)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Featured Reports',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    height: 200,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        _buildCarouselItem(
+                            'Safety Alert: Speeding in Residential Areas'),
+                        _buildCarouselItem(
+                            'New Campaign: Safe Pedestrian Crossings'),
+                        _buildCarouselItem('Tips for Winter Driving Safety'),
+                        _buildCarouselItem(
+                            'New Traffic Law: Hands-Free Devices'),
+                        _buildCarouselItem(
+                            'Improved Road Signage for Night Driving'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Statistics Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Statistics',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildStatisticCard('Total Violations', '1200'),
+                      _buildStatisticCard('Solved Cases', '800'),
+                      _buildStatisticCard('Unsolved Cases', '400'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
             // Road Safety Awareness Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -131,23 +205,21 @@ class LandingPage extends StatelessWidget {
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Learn important tips and information about road safety to keep yourself and others safe on the road.',
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildSafetyCard(
+                          'assets/images/dp.jpg',
+                          'Safety Tips for Drivers',
+                          'Stay alert, follow traffic rules, and drive defensively to ensure everyone’s safety on the road.'),
+                      _buildSafetyCard(
+                          'assets/images/dp.jpg',
+                          'Pedestrian Safety',
+                          'Always use crosswalks, watch for oncoming traffic, and ensure you are visible when crossing the road.'),
+                      _buildSafetyCard('assets/images/dp.jpg', 'Cyclist Safety',
+                          'Wear helmets, use proper signaling, and stay in the bike lanes to protect yourself and others.'),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  _buildSafetyCard(
-                    'assets/images/dp.jpg',
-                    'Safety Tips for Drivers',
-                    'Stay alert, follow traffic rules, and drive defensively to ensure everyone’s safety on the road.',
-                  ),
-                  const SizedBox(height: 20),
-                  _buildSafetyCard(
-                    'assets/images/dp.jpg',
-                    'Pedestrian Safety',
-                    'Always use crosswalks, watch for oncoming traffic, and ensure you are visible when crossing the road.',
-                  ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -163,13 +235,17 @@ class LandingPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () => Navigator.pushNamed(context, '/privacy-policy'),
-                        child: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/privacy-policy'),
+                        child: const Text('Privacy Policy',
+                            style: TextStyle(color: Colors.white)),
                       ),
                       const SizedBox(width: 20),
                       TextButton(
-                        onPressed: () => Navigator.pushNamed(context, '/terms-of-service'),
-                        child: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/terms-of-service'),
+                        child: const Text('Terms of Service',
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),
@@ -200,30 +276,88 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSafetyCard(String imagePath, String title, String description) {
+  Widget _buildActionItem(IconData icon, String title) {
+    return Column(
+      children: [
+        Icon(icon, size: 40, color: Colors.deepPurple),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCarouselItem(String title) {
     return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      margin: const EdgeInsets.only(right: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 200,
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(title,
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        ),
       ),
+    );
+  }
+
+  Widget _buildStatisticCard(String title, String value) {
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(imagePath, width: 80, height: 80, fit: BoxFit.cover),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text(description, style: const TextStyle(fontSize: 14, color: Colors.black54)),
-                ],
-              ),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 24, color: Colors.deepPurple),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSafetyCard(String imagePath, String title, String description) {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        children: [
+          Image.asset(
+            imagePath,
+            width: 120,
+            height: 120,
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+        ],
       ),
     );
   }
