@@ -1,7 +1,6 @@
-// Signup File
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -16,42 +15,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool _isLoading = false; // Loading indicator flag
 
-  // Function to handle sign-up action
   void _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final email = _emailController.text;
-      final password = _passwordController.text;
+      setState(() => _isLoading = true);
+
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.137.149:3000/api/register'), // Updated URL
+          Uri.parse(
+              'http://192.168.137.149:3000/api/signup'), // Adjust URL as needed
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'email': email, 'password': password}),
         );
 
-        print('Response Status: ${response.statusCode}');
-        print('Response Body: ${response.body}');
+        setState(() => _isLoading = false);
 
         if (response.statusCode == 201) {
-          // Success
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sign up successful!')),
+            const SnackBar(content: Text('Sign up successful')),
           );
-
-          // Navigate to login screen after successful sign-up
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushReplacementNamed(
+              context, '/login'); // Navigate to login page
         } else {
-          // Failure
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sign up failed')),
+            SnackBar(content: Text('Sign up failed: ${response.reasonPhrase}')),
           );
         }
       } catch (e) {
-        // Handle network errors or unexpected issues
-        print('Error: $e');
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('An error occurred')),
+          SnackBar(content: Text('Error: $e')),
         );
       }
     }
@@ -61,134 +58,90 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple, // Matching theme color
         title: const Text('Sign Up'),
+        backgroundColor: const Color(0xFF6200EA),
       ),
       body: Padding(
-        padding:
-            const EdgeInsets.all(24.0), // Increased padding for better spacing
+        padding: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-
-              // Email field with enhanced decoration
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.deepPurple),
-                  prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple),
-                  ),
-                  border: UnderlineInputBorder(),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an email';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Password field with enhanced decoration
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: TextStyle(color: Colors.deepPurple),
-                  prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple),
-                  ),
-                  border: UnderlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Confirm Password field with enhanced decoration
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm Password',
-                  labelStyle: TextStyle(color: Colors.deepPurple),
-                  prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple),
-                  ),
-                  border: UnderlineInputBorder(),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  decoration:
+                      const InputDecoration(labelText: 'Confirm Password'),
+                  obscureText: true,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != _passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  if (value != _passwordController.text) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Sign Up button with Tailwind-like styling
-              ElevatedButton(
-                onPressed: _signUp,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                const SizedBox(height: 20),
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _signUp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF6200EA),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        child: const Text('Sign Up'),
+                      ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    '© 2024 Traffic Violation Reporting System',
+                    style: TextStyle(
+                      color: const Color(0xFF6200EA),
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Login link with some styling
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text(
-                  'Already have an account? Login',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Copyright Footer
-              const Center(
-                child: Text(
-                  '© 2024 Traffic Violation Reporting System. All rights reserved.',
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

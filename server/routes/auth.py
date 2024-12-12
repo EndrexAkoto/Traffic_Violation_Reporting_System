@@ -3,12 +3,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
-from config.db import db_connection
+from config.db import db_connection, JWT_SECRET  # Import JWT_SECRET from db.py
 
 # Define the Blueprint for authentication
 auth_bp = Blueprint('auth', __name__)
-
-JWT_SECRET = 'your_jwt_secret'  # Replace with your JWT secret key
 
 # Middleware to verify JWT token
 def token_required(f):
@@ -65,6 +63,12 @@ def register():
         print(f"Error during registration: {e}")
         return jsonify({'message': 'Server error'}), 500
 
+# Alias for the /register route
+@auth_bp.route('/signup', methods=['POST'])
+def signup():
+    print("Signup route triggered")
+    return register() # Reuse the register function
+
 # User Login Route
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -93,7 +97,7 @@ def login():
 
         token = jwt.encode(
             {'id': user_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)},
-            JWT_SECRET,
+            JWT_SECRET,  # Using the imported JWT_SECRET
             algorithm="HS256"
         )
 

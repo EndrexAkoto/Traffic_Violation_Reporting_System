@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import pool
-from config.db import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT  # Remove unnecessary db_connection import
+from config.db import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
 from routes.auth import auth_bp  # Import the authentication routes
 
 app = Flask(__name__)
