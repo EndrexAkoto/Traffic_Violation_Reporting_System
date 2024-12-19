@@ -228,7 +228,6 @@ class ProfileScreen extends StatelessWidget {
       BuildContext context, String label, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: Text(label),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF6200EA), // Theme color
         minimumSize: const Size(150, 50), // Adjust width here
@@ -236,6 +235,7 @@ class ProfileScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
+      child: Text(label),
     );
   }
 }

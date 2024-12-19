@@ -45,6 +45,19 @@ class ReportedCasesPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // Title Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Accidents Reported by County',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          const Divider(),
+
+          // List of Reported Cases
           Expanded(
             child: ListView.builder(
               itemCount: 10, // Replace with actual data count
@@ -58,15 +71,33 @@ class ReportedCasesPage extends StatelessWidget {
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(
+                        'assets/images/accident_placeholder.jpg', // Replace with dynamic image/video thumbnail
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                     title: Text(
-                      'Case ${index + 1}',
+                      'Case ${index + 1} - Nairobi',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                     ),
-                    subtitle: const Text(
-                      'Details about the reported case',
-                      style: TextStyle(color: Colors.grey),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          'Type: Road Accident',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                        Text(
+                          'Cause: Overloading (Lorry, KBC 123A)',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ],
                     ),
                     trailing: Icon(
                       Icons.arrow_forward,
@@ -76,7 +107,15 @@ class ReportedCasesPage extends StatelessWidget {
                       Navigator.pushNamed(
                         context,
                         '/case-details',
-                        arguments: {'caseId': index + 1},
+                        arguments: {
+                          'caseId': index + 1,
+                          'county': 'Nairobi',
+                          'type': 'Road Accident',
+                          'cause': 'Overloading',
+                          'vehicle': 'Lorry',
+                          'plate': 'KBC 123A',
+                          'media': 'assets/images/accident_placeholder.jpg',
+                        },
                       );
                     },
                   ),
@@ -84,18 +123,30 @@ class ReportedCasesPage extends StatelessWidget {
               },
             ),
           ),
-          // Footer
+
+          // Footer Section
           Container(
             color: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.all(12),
-            alignment: Alignment.center,
-            child: const Text(
-              '© 2024',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+            child: Column(
+              children: [
+                const Text(
+                  'Powered by Traffic Safety Initiative',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '© ${DateTime.now().year} Traffic Management System',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

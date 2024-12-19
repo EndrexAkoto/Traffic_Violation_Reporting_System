@@ -150,7 +150,7 @@ class LandingPage extends StatelessWidget {
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  Container(
+                  SizedBox(
                     height: 200,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
