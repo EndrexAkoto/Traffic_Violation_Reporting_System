@@ -17,6 +17,7 @@ import 'pages/user_dashboard.dart'; // Import the UserDashboard page
 import 'pages/admin/landing_page.dart';
 import 'pages/admin/login_screen.dart';
 import 'pages/admin/signup_screen.dart';
+import 'pages/map_screen.dart'; // Import the MapScreen
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         '/admin-login': (context) => const AdminLoginScreen(),
         '/admin-signup': (context) =>
             const AdminSignUpScreen(), // Admin SignUpScreen
+        '/map': (context) => const MapScreen(), // Add MapScreen route
       },
     );
   }
