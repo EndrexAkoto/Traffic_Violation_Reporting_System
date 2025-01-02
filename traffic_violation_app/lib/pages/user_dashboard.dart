@@ -10,11 +10,39 @@ class UserDashboard extends StatelessWidget {
         title: const Text('User Dashboard'),
         backgroundColor: Colors.deepPurple,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              _showNotifications(context);
-            },
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications),
+                onPressed: () {
+                  _showNotifications(context);
+                },
+              ),
+              Positioned(
+                right: 11,
+                top: 11,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 18,
+                  ),
+                  child: const Text(
+                    '3', // Replace with dynamic count
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
           ),
           IconButton(
             icon: const Icon(Icons.settings),
@@ -35,7 +63,7 @@ class UserDashboard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage('assets/dp.jpg'),
+                  backgroundImage: const AssetImage('assets/dp.jpg'),
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -149,13 +177,29 @@ class UserDashboard extends StatelessWidget {
     );
   }
 
-  void _showNotifications(BuildContext context) {
+  void _showNotifications(BuildContext context) async {
+    // Fetch notifications dynamically
+    final notifications = await fetchNotifications();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Notifications'),
-          content: const Text('You have no new notifications.'),
+          content: notifications.isEmpty
+              ? const Text('You have no new notifications.')
+              : SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    itemCount: notifications.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(notifications[index]['title']),
+                        subtitle: Text(notifications[index]['description']),
+                      );
+                    },
+                  ),
+                ),
           actions: [
             TextButton(
               onPressed: () {
@@ -167,5 +211,20 @@ class UserDashboard extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<List<Map<String, String>>> fetchNotifications() async {
+    // Replace this mock function with actual backend API call
+    await Future.delayed(const Duration(seconds: 1)); // Simulating delay
+    return [
+      {
+        'title': 'New Report Submitted',
+        'description': 'A new case has been reported.'
+      },
+      {
+        'title': 'Case Resolved',
+        'description': 'Case #12345 has been marked as resolved.'
+      },
+    ];
   }
 }

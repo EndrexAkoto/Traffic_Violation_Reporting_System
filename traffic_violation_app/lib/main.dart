@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // Import notifications
 import 'pages/landing_page.dart';
 import 'pages/login_screen.dart';
 import 'pages/signup_screen.dart';
@@ -19,7 +20,20 @@ import 'pages/admin/login_screen.dart';
 import 'pages/admin/signup_screen.dart';
 import 'pages/map_screen.dart'; // Import the MapScreen
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin(); // Initialize the notifications plugin
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Configure notification settings
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher'); // Adjust icon
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
   runApp(const MyApp());
 }
 
@@ -60,4 +74,25 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+// Example function to show a notification
+Future<void> showNotification() async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+    'traffic_violation_channel',
+    'Traffic Violation Notifications',
+    channelDescription: 'This channel is used for traffic violation alerts',
+    importance: Importance.high,
+    priority: Priority.high,
+    showWhen: false,
+  );
+  const NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+    0, // Notification ID
+    'Traffic Alert',
+    'You have a new traffic violation report.',
+    platformChannelSpecifics,
+  );
 }
