@@ -194,8 +194,21 @@ class UserDashboard extends StatelessWidget {
                     itemCount: notifications.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text(notifications[index]['title']),
-                        subtitle: Text(notifications[index]['description']),
+                        title: Text(
+                          notifications[index]['title'] ??
+                              'No Title', // Default value
+                        ),
+                        subtitle: Text(
+                          notifications[index]['description'] ??
+                              'No Description', // Default value
+                        ),
+                        leading: const Icon(
+                          Icons.notification_important,
+                          color: Colors.deepPurple,
+                        ),
+                        onTap: () {
+                          // Handle notification click
+                        },
                       );
                     },
                   ),

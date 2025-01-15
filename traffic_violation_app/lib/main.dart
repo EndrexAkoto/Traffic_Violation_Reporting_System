@@ -18,7 +18,7 @@ import 'pages/user_dashboard.dart'; // Import the UserDashboard page
 import 'pages/admin/landing_page.dart';
 import 'pages/admin/login_screen.dart';
 import 'pages/admin/signup_screen.dart';
-import 'pages/map_screen.dart'; // Import the MapScreen
+// Import the MapScreen
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin(); // Initialize the notifications plugin

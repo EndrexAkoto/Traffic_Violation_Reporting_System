@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import pool
@@ -36,6 +36,11 @@ def get_data():
         finally:
             conn.close()  # Return the connection to the pool
     return jsonify({"error": "Database connection failed"}), 500
+
+# Add a route for the map page
+@app.route('/map')
+def map_view():
+    return render_template('map.html')  # Ensure `map.html` is in the `templates` folder
 
 # Add a route for the homepage to avoid 404 errors
 @app.route('/')

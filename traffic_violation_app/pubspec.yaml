@@ -14,12 +14,12 @@ dependencies:
   collection: ^1.18.0
   cupertino_icons: ^1.0.8
   http: ^1.2.2
-  google_maps_flutter: ^2.10.0
+  flutter_map: ^7.0.2  # New version
   image_picker: ^1.0.0+3
   url_launcher: ^6.0.9
-  fl_chart: ^0.69.2
+  fl_chart: ^0.70.1
   font_awesome_flutter: ^10.0.0
-  flutter_local_notifications: ^14.0.0
+  flutter_local_notifications: ^18.0.1
 
 dev_dependencies:
   flutter_test:

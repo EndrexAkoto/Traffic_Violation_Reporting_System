@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenya Traffic Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map centered on Kenya (default)
+    var map = L.map('map').setView([1.2921, 36.8219], 7); // Center on Nairobi, Kenya
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Define the bounds for Kenya
+    var kenyaBounds = [
+      [-4.677, 33.909], // Southwest corner (bottom-left)
+      [5.019, 41.899]   // Northeast corner (top-right)
+    ];
+
+    // Restrict the map to Kenya's bounds
+    map.setMaxBounds(kenyaBounds);
+    map.on('drag', function() {
+      map.panInsideBounds(kenyaBounds, { animate: true });
+    });
+
+    // Auto-detect user location and set map view
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var userLat = position.coords.latitude;
+        var userLon = position.coords.longitude;
+        
+        // Center the map to the user's location
+        map.setView([userLat, userLon], 13);  // Zoom level 13 is a good starting level for city view
+
+        // Add a marker to the user's location
+        var marker = L.marker([userLat, userLon]).addTo(map);
+        marker.bindPopup("Your Location").openPopup();
+        
+        // You can then pass `userLat` and `userLon` for the reporting form
+        // Example: store location in hidden form fields for the backend
+        console.log("User's Latitude: " + userLat);
+        console.log("User's Longitude: " + userLon);
+      }, function(error) {
+        alert("Geolocation failed: " + error.message);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  </script>
+</body>
+</html>
